@@ -2,6 +2,7 @@ SchemeViewer
 ============
 
 Discrete Level Scheme Viewer for NSTARC
+<<<<<<< HEAD
 
 DEPENDENCIES
 ============
@@ -25,3 +26,5 @@ CONTACT
 
 Feel free to write e-mails about feature requests and bugs.
 Bora CANBULA <bc.jabba@gmail.com>
+=======
+>>>>>>> 72355ec21b300dd42e250af587ef2f95e8de05ad
