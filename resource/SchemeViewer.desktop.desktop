@@ -1,0 +1,9 @@
+[Desktop Entry]
+Terminal=true
+Icon=SchemeViewer
+Type=Application
+Categories=Office
+Exec=SchemeViewer
+Name=SchemeViewer
+Comment=Discrete Level Scheme Viewer for NSTARC
+Name[en_US]=SchemeViewer.desktop
