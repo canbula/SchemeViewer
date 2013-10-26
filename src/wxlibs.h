@@ -18,6 +18,8 @@
 #ifndef _WXLIBS_H
 #define _WXLIBS_H
 
+#include <iostream>
+#include <algorithm>
 #include <wx/wx.h>
 #include <wx/aboutdlg.h>
 #include <wx/app.h>
@@ -67,6 +69,9 @@
 #include <wx/toolbar.h>
 #include <wx/utils.h>
 #include <wx/wxhtml.h>
+
+const wxString svPath = wxGetHomeDir()+wxT("/Codes/SchemeViewer/");
+const wxString nstarcPath = wxGetHomeDir()+wxT("/Codes/nstarc/");
 
 #ifdef __APPLE__
 const wxString platform = wxT("apple");
