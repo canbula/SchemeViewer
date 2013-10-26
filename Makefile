@@ -27,7 +27,7 @@ SchemeViewer.app: SchemeViewer
 	echo -n 'APPL????' > SchemeViewer.app/Contents/PkgInfo
 	mv SchemeViewer SchemeViewer.app/Contents/MacOS/SchemeViewer
 	cp resource/SchemeViewer.icns SchemeViewer.app/Contents/Resources/
-FFT:
+SchemeViewer:
 	$(CC) -o SchemeViewer src/main.cpp src/main.h src/schemeviewer.cpp src/schemeviewer.h src/wxlibs.h
 install:
 	$(INSTALLTARGET)
