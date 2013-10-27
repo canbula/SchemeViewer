@@ -1,4 +1,6 @@
-CC = g++ `wx-config --cxxflags --libs`
+CC = g++
+FLAGS = `wx-config --cxxflags`
+LIBS = `wx-config --libs`
 OS := $(shell uname)
 ifeq ($(OS), Darwin)
 ALLTARGET := SchemeViewer.app
@@ -9,7 +11,7 @@ else
 ALLTARGET := SchemeViewer
 INSTALLTARGET := cp -Rf ${CURDIR} /usr/share/SchemeViewer
 INSTALLTARGET += ;ln -s /usr/share/SchemeViewer/SchemeViewer /bin/SchemeViewer
-INSTALLTARGET += ;ln -s /usr/share/FFT/resource/SchemeViewer.xpm /usr/share/pixmaps/SchemeViewer.xpm
+INSTALLTARGET += ;ln -s /usr/share/SchemeViewer/resource/SchemeViewer.xpm /usr/share/pixmaps/SchemeViewer.xpm
 INSTALLTARGET += ;cp -f ${CURDIR}/resource/SchemeViewer.desktop /usr/share/applications/SchemeViewer.desktop
 UNINSTALLTARGET := rm -Rf /usr/share/SchemeViewer
 UNINSTALLTARGET += ;rm -f /usr/share/applications/SchemeViewer.desktop
@@ -28,7 +30,7 @@ SchemeViewer.app: SchemeViewer
 	mv SchemeViewer SchemeViewer.app/Contents/MacOS/SchemeViewer
 	cp resource/SchemeViewer.icns SchemeViewer.app/Contents/Resources/
 SchemeViewer:
-	$(CC) -o SchemeViewer src/main.cpp src/main.h src/schemeviewer.cpp src/schemeviewer.h src/wxlibs.h
+	$(CC) $(FLAGS) -o SchemeViewer src/main.cpp src/main.h src/schemeviewer.cpp src/schemeviewer.h src/wxlibs.h $(LIBS)
 install:
 	$(INSTALLTARGET)
 uninstall:
