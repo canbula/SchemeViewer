@@ -29,9 +29,14 @@ SchemeViewer::SchemeViewer(const wxString& title)
 	
 	wxMenuBar *menubar = new wxMenuBar;
 	wxMenu *file = new wxMenu;
+	file->Append(ID_MENU_FIRST,wxT("First Isotope\tCtrl+1"));
+	file->Append(ID_MENU_PREV,wxT("Previous Isotope\tCtrl+2"));
+	file->Append(ID_MENU_NEXT,wxT("Next Isotope\tCtrl+3"));
+	file->Append(ID_MENU_LAST,wxT("Last Isotope\tCtrl+4"));
+	file->AppendSeparator();
 	file->Append(wxID_ABOUT,wxT("About\tCtrl+H"));
 	file->Append(wxID_EXIT,wxT("Close\tCtrl+Q"));
-	menubar->Append(file,wxT("File"));
+	menubar->Append(file,wxT("Menu"));
 	SetMenuBar(menubar);
 	
 	wxStatusBar *statusbar = new wxStatusBar(this,wxID_ANY,wxST_SIZEGRIP);
@@ -158,6 +163,10 @@ SchemeViewer::SchemeViewer(const wxString& title)
 	Connect(ID_NAVIGATOR_LAST,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(SchemeViewer::LastIsotope));
 	Connect(ID_NAVIGATOR_PREV,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(SchemeViewer::PrevIsotope));
 	Connect(ID_NAVIGATOR_NEXT,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(SchemeViewer::NextIsotope));
+	Connect(ID_MENU_FIRST,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(SchemeViewer::FirstIsotope));
+	Connect(ID_MENU_LAST,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(SchemeViewer::LastIsotope));
+	Connect(ID_MENU_PREV,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(SchemeViewer::PrevIsotope));
+	Connect(ID_MENU_NEXT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(SchemeViewer::NextIsotope));
 	
 	SetIcon(wxIcon(wxT("resource/SchemeViewer.xpm")));
 	Centre();

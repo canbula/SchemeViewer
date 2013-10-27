@@ -34,6 +34,7 @@
 #include <wx/colour.h>
 #include <wx/datectrl.h>
 #include <wx/datetime.h>
+#include <wx/defs.h>
 #include <wx/dialog.h>
 #include <wx/dir.h>
 #include <wx/dnd.h>
