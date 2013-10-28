@@ -18,14 +18,48 @@
 #include "schemeviewer.h"
 
 SchemeViewer::SchemeViewer(const wxString& title)
-	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(700,700),wxDEFAULT_FRAME_STYLE & ~ (wxRESIZE_BORDER|wxMAXIMIZE_BOX))
+	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(700,600),wxDEFAULT_FRAME_STYLE & ~ (wxRESIZE_BORDER|wxMAXIMIZE_BOX))
 {
+	
+	for(int i=0;i<140;i++)
+	{
+		for(int j=0;j<350;j++)
+		{
+			bestpots[i][j]=0;
+		}
+	}
+	int Z;
+	int A;
+	int P;
+	wxString firstline;
+	wxString eachline;
+	wxTextFile bestpotsFile(nstarcPath+wxT("lib/bestpots.inp"));
+	if(bestpotsFile.Exists())
+	{
+		bestpotsFile.Open();
+		firstline = bestpotsFile.GetFirstLine();
+		Z = wxAtoi(firstline.Mid(0,4));A = wxAtoi(firstline.Mid(4,4));P = wxAtoi(firstline.Mid(8,4));
+		bestpots[Z][A]=P;
+		while(!bestpotsFile.Eof())
+		{
+			eachline = bestpotsFile.GetNextLine();
+			Z = wxAtoi(eachline.Mid(0,4));A = wxAtoi(eachline.Mid(4,4));P = wxAtoi(eachline.Mid(8,4));
+			bestpots[Z][A]=P;
+		}
+		bestpotsFile.Close();
+	}
 	
 	wxImage::AddHandler(new wxPNGHandler);
 	wxBitmap firstButton(svPath+wxT("resource/icons/first.png"),wxBITMAP_TYPE_PNG);
 	wxBitmap lastButton(svPath+wxT("resource/icons/last.png"),wxBITMAP_TYPE_PNG);
 	wxBitmap prevButton(svPath+wxT("resource/icons/prev.png"),wxBITMAP_TYPE_PNG);
 	wxBitmap nextButton(svPath+wxT("resource/icons/next.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap potHO(svPath+wxT("resource/icons/HO.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap potWC(svPath+wxT("resource/icons/WC.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap potWS(svPath+wxT("resource/icons/WS.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap potHOSEL(svPath+wxT("resource/icons/HOSEL.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap potWCSEL(svPath+wxT("resource/icons/WCSEL.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap potWSSEL(svPath+wxT("resource/icons/WSSEL.png"),wxBITMAP_TYPE_PNG);
 	
 	wxMenuBar *menubar = new wxMenuBar;
 	wxMenu *file = new wxMenu;
@@ -78,7 +112,6 @@ SchemeViewer::SchemeViewer(const wxString& title)
 		cont = lvlschdir.GetNext(&lvlschfilename);
 	}
 	isotopename = new wxChoice(topmidpanel,ID_ISOTOPE_SELECTOR,wxPoint(-1,-1),wxSize(-1,-1),*isotopenames);
-	isotopename->SetStringSelection(wxT("Z003A011"));
 	topmidbox->Add(isotopename,1,wxALIGN_CENTER|wxEXPAND);
 	topmidpanel->SetSizer(topmidbox);
 	topbox->Add(topmidpanel,1,wxALIGN_CENTER|wxEXPAND);
@@ -96,52 +129,72 @@ SchemeViewer::SchemeViewer(const wxString& title)
 	wxBoxSizer *middlehbox = new wxBoxSizer(wxHORIZONTAL);
 	
 	middlehbox->Add(new wxStaticLine(middlepanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_VERTICAL),0,wxEXPAND);
+	
+	wxPanel *leftouterpanel = new wxPanel(middlepanel,-1);
+	wxBoxSizer *leftoutervbox = new wxBoxSizer(wxVERTICAL);
+	potHO.SetWidth(20);
+	potHO.SetHeight(240);
+	imagepotHO = new wxStaticBitmap(leftouterpanel,-1,potHO);
+	leftoutervbox->Add(imagepotHO,1,wxEXPAND);
+	leftoutervbox->Add(new wxStaticLine(leftouterpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
+	potWC.SetWidth(20);
+	potWC.SetHeight(240);
+	imagepotHOWC = new wxStaticBitmap(leftouterpanel,-1,potWC);
+	leftoutervbox->Add(imagepotHOWC,1,wxEXPAND);
+	leftouterpanel->SetSizer(leftoutervbox);
+	leftouterpanel->SetBackgroundColour(wxColour(255,255,255));
+	middlehbox->Add(leftouterpanel,0,wxALIGN_LEFT|wxEXPAND);
 
 	wxPanel *leftpanel = new wxPanel(middlepanel,-1);
 	wxBoxSizer *leftvbox = new wxBoxSizer(wxVERTICAL);
-	wxScrolledWindow *leftscwin1 = new wxScrolledWindow(leftpanel,-1);
 	wxBitmap imagepot1(nstarcPath+wxT("lvlsch/01/Z011A024.png"),wxBITMAP_TYPE_PNG);
 	imagepot1.SetWidth(320);
 	imagepot1.SetHeight(240);
-	imageholder1 = new wxStaticBitmap(leftscwin1, -1, imagepot1);
-	leftscwin1->SetScrollbars(0, 10, 0, 24);
-	leftscwin1->SetBackgroundColour(wxColour(255,255,255));
-	leftvbox->Add(leftscwin1,1,wxEXPAND);
+	imageholder1 = new wxStaticBitmap(leftpanel,-1,imagepot1);
+	leftvbox->Add(imageholder1,1,wxEXPAND);
 	leftvbox->Add(new wxStaticLine(leftpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
-	wxScrolledWindow *leftscwin2 = new wxScrolledWindow(leftpanel,-1);
 	wxBitmap imagepot2(nstarcPath+wxT("lvlsch/02/Z011A024.png"),wxBITMAP_TYPE_PNG);
 	imagepot2.SetWidth(320);
 	imagepot2.SetHeight(240);
-	imageholder2 = new wxStaticBitmap(leftscwin2, -1, imagepot2);
-	leftscwin2->SetScrollbars(0, 10, 0, 24);
-	leftscwin2->SetBackgroundColour(wxColour(255,255,255));
-	leftvbox->Add(leftscwin2,1,wxEXPAND);
+	imageholder2 = new wxStaticBitmap(leftpanel,-1,imagepot2);
+	leftvbox->Add(imageholder2,1,wxEXPAND);
 	leftpanel->SetSizer(leftvbox);
+	leftpanel->SetBackgroundColour(wxColour(255,255,255));
 	middlehbox->Add(leftpanel,1,wxALIGN_LEFT|wxEXPAND);
 
 	middlehbox->Add(new wxStaticLine(middlepanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_VERTICAL),0,wxEXPAND);
 
 	wxPanel *rightpanel = new wxPanel(middlepanel,-1);
 	wxBoxSizer *rightvbox = new wxBoxSizer(wxVERTICAL);
-	wxScrolledWindow *rightscwin1 = new wxScrolledWindow(rightpanel,-1);
 	wxBitmap imagepot3(nstarcPath+wxT("lvlsch/03/Z011A024.png"),wxBITMAP_TYPE_PNG);
 	imagepot3.SetWidth(320);
 	imagepot3.SetHeight(240);
-	imageholder3 = new wxStaticBitmap(rightscwin1, -1, imagepot3);
-	rightscwin1->SetScrollbars(0, 10, 0, 24);
-	rightscwin1->SetBackgroundColour(wxColour(255,255,255));
-	rightvbox->Add(rightscwin1,1,wxEXPAND);
+	imageholder3 = new wxStaticBitmap(rightpanel,-1,imagepot3);
+	rightvbox->Add(imageholder3,1,wxEXPAND);
 	rightvbox->Add(new wxStaticLine(rightpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
-	wxScrolledWindow *rightscwin2 = new wxScrolledWindow(rightpanel,-1);
 	wxBitmap imagepot4(nstarcPath+wxT("lvlsch/04/Z011A024.png"),wxBITMAP_TYPE_PNG);
 	imagepot4.SetWidth(320);
 	imagepot4.SetHeight(240);
-	imageholder4 = new wxStaticBitmap(rightscwin2, -1, imagepot4);
-	rightscwin2->SetScrollbars(0, 10, 0, 24);
-	rightscwin2->SetBackgroundColour(wxColour(255,255,255));
-	rightvbox->Add(rightscwin2,1,wxEXPAND);
+	imageholder4 = new wxStaticBitmap(rightpanel,-1,imagepot4);
+	rightvbox->Add(imageholder4,1,wxEXPAND);
 	rightpanel->SetSizer(rightvbox);
+	rightpanel->SetBackgroundColour(wxColour(255,255,255));
 	middlehbox->Add(rightpanel,1,wxALIGN_RIGHT|wxEXPAND);
+	
+	wxPanel *rightouterpanel = new wxPanel(middlepanel,-1);
+	wxBoxSizer *rightoutervbox = new wxBoxSizer(wxVERTICAL);
+	potWS.SetWidth(20);
+	potWS.SetHeight(240);
+	imagepotWS = new wxStaticBitmap(rightouterpanel,-1,potWS);
+	rightoutervbox->Add(imagepotWS,1,wxEXPAND);
+	rightoutervbox->Add(new wxStaticLine(rightouterpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
+	potWC.SetWidth(20);
+	potWC.SetHeight(240);
+	imagepotWSWC = new wxStaticBitmap(rightouterpanel,-1,potWC);
+	rightoutervbox->Add(imagepotWSWC,1,wxEXPAND);
+	rightouterpanel->SetSizer(rightoutervbox);
+	rightouterpanel->SetBackgroundColour(wxColour(255,255,255));
+	middlehbox->Add(rightouterpanel,0,wxALIGN_RIGHT|wxEXPAND);
 	
 	middlehbox->Add(new wxStaticLine(middlepanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_VERTICAL),0,wxEXPAND);
 
@@ -225,16 +278,31 @@ void SchemeViewer::ChangeIsotope()
 	wxBitmap newimagepot2(nstarcPath+wxT("lvlsch/02/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
 	wxBitmap newimagepot3(nstarcPath+wxT("lvlsch/03/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
 	wxBitmap newimagepot4(nstarcPath+wxT("lvlsch/04/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
-	newimagepot1.SetWidth(320);
-	newimagepot1.SetHeight(240);
-	newimagepot2.SetWidth(320);
-	newimagepot2.SetHeight(240);
-	newimagepot3.SetWidth(320);
-	newimagepot3.SetHeight(240);
-	newimagepot4.SetWidth(320);
-	newimagepot4.SetHeight(240);
-	imageholder1->SetBitmap(newimagepot1);
-	imageholder2->SetBitmap(newimagepot2);
-	imageholder3->SetBitmap(newimagepot3);
-	imageholder4->SetBitmap(newimagepot4);
+	newimagepot1.SetWidth(320);newimagepot1.SetHeight(240);
+	newimagepot2.SetWidth(320);newimagepot2.SetHeight(240);
+	newimagepot3.SetWidth(320);newimagepot3.SetHeight(240);
+	newimagepot4.SetWidth(320);newimagepot4.SetHeight(240);
+	imageholder1->SetBitmap(newimagepot1);imageholder2->SetBitmap(newimagepot2);imageholder3->SetBitmap(newimagepot3);imageholder4->SetBitmap(newimagepot4);
+	wxBitmap newpotHO(svPath+wxT("resource/icons/HO.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap newpotHOWC(svPath+wxT("resource/icons/WC.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap newpotWS(svPath+wxT("resource/icons/WS.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap newpotWSWC(svPath+wxT("resource/icons/WC.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap newpotHOSEL(svPath+wxT("resource/icons/HOSEL.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap newpotHOWCSEL(svPath+wxT("resource/icons/WCSEL.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap newpotWSSEL(svPath+wxT("resource/icons/WSSEL.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap newpotWSWCSEL(svPath+wxT("resource/icons/WCSEL.png"),wxBITMAP_TYPE_PNG);
+	newpotHO.SetWidth(20);newpotHO.SetHeight(240);
+	newpotHOWC.SetWidth(20);newpotHOWC.SetHeight(240);
+	newpotWS.SetWidth(20);newpotWS.SetHeight(240);
+	newpotWSWC.SetWidth(20);newpotWSWC.SetHeight(240);
+	newpotHOSEL.SetWidth(20);newpotHOSEL.SetHeight(240);
+	newpotHOWCSEL.SetWidth(20);newpotHOWCSEL.SetHeight(240);
+	newpotWSSEL.SetWidth(20);newpotWSSEL.SetHeight(240);
+	newpotWSWCSEL.SetWidth(20);newpotWSWCSEL.SetHeight(240);
+	imagepotHO->SetBitmap(newpotHO);imagepotHOWC->SetBitmap(newpotHOWC);imagepotWS->SetBitmap(newpotWS);imagepotWSWC->SetBitmap(newpotWSWC);
+	int Z = wxAtoi(newisotopename.Mid(1,3));int A = wxAtoi(newisotopename.Mid(5,3));
+	if(bestpots[Z][A]==1) imagepotHO->SetBitmap(newpotHOSEL);
+	if(bestpots[Z][A]==2) imagepotHOWC->SetBitmap(newpotHOWCSEL);
+	if(bestpots[Z][A]==3) imagepotWS->SetBitmap(newpotWSSEL);
+	if(bestpots[Z][A]==4) imagepotWSWC->SetBitmap(newpotWSWCSEL);
 }

@@ -35,12 +35,17 @@ public:
 		ID_MENU_NEXT
 	};
 	
+	int bestpots[140][350];
 	wxArrayString *isotopenames;
 	wxChoice *isotopename;
 	wxStaticBitmap *imageholder1;
 	wxStaticBitmap *imageholder2;
 	wxStaticBitmap *imageholder3;
 	wxStaticBitmap *imageholder4;
+	wxStaticBitmap *imagepotHO;
+	wxStaticBitmap *imagepotHOWC;
+	wxStaticBitmap *imagepotWS;
+	wxStaticBitmap *imagepotWSWC;
 
 	void OnQuit(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
