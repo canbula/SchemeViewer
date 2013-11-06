@@ -111,6 +111,7 @@ SchemeViewer::SchemeViewer(const wxString& title)
 		isotopenames->Add(lvlschfilename.Mid(0,8));
 		cont = lvlschdir.GetNext(&lvlschfilename);
 	}
+	isotopenames->Sort();
 	isotopename = new wxChoice(topmidpanel,ID_ISOTOPE_SELECTOR,wxPoint(-1,-1),wxSize(-1,-1),*isotopenames);
 	topmidbox->Add(isotopename,1,wxALIGN_CENTER|wxEXPAND);
 	topmidpanel->SetSizer(topmidbox);
@@ -274,14 +275,16 @@ void SchemeViewer::NextIsotope(wxCommandEvent& WXUNUSED(event))
 void SchemeViewer::ChangeIsotope()
 {
 	wxString newisotopename = isotopename->GetString(isotopename->GetSelection());
-	wxBitmap newimagepot1(nstarcPath+wxT("lvlsch/01/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
-	wxBitmap newimagepot2(nstarcPath+wxT("lvlsch/02/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
-	wxBitmap newimagepot3(nstarcPath+wxT("lvlsch/03/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
-	wxBitmap newimagepot4(nstarcPath+wxT("lvlsch/04/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
-	newimagepot1.SetWidth(320);newimagepot1.SetHeight(240);
-	newimagepot2.SetWidth(320);newimagepot2.SetHeight(240);
-	newimagepot3.SetWidth(320);newimagepot3.SetHeight(240);
-	newimagepot4.SetWidth(320);newimagepot4.SetHeight(240);
+	wxImage newimgpot1 = wxImage(320,240);wxImage newimgpot2 = wxImage(320,240);wxImage newimgpot3 = wxImage(320,240);wxImage newimgpot4 = wxImage(320,240);
+	newimgpot1.LoadFile(nstarcPath+wxT("lvlsch/01/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
+	newimgpot2.LoadFile(nstarcPath+wxT("lvlsch/02/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
+	newimgpot3.LoadFile(nstarcPath+wxT("lvlsch/03/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
+	newimgpot4.LoadFile(nstarcPath+wxT("lvlsch/04/")+newisotopename+wxT(".png"),wxBITMAP_TYPE_PNG);
+	newimgpot1.Rescale(320,240);newimgpot2.Rescale(320,240);newimgpot3.Rescale(320,240);newimgpot4.Rescale(320,240);
+	wxBitmap newimagepot1(newimgpot1);
+	wxBitmap newimagepot2(newimgpot2);
+	wxBitmap newimagepot3(newimgpot3);
+	wxBitmap newimagepot4(newimgpot4);
 	imageholder1->SetBitmap(newimagepot1);imageholder2->SetBitmap(newimagepot2);imageholder3->SetBitmap(newimagepot3);imageholder4->SetBitmap(newimagepot4);
 	wxBitmap newpotHO(svPath+wxT("resource/icons/HO.png"),wxBITMAP_TYPE_PNG);
 	wxBitmap newpotHOWC(svPath+wxT("resource/icons/WC.png"),wxBITMAP_TYPE_PNG);
